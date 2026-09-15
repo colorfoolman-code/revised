@@ -1,0 +1,1437 @@
+\section{有向集、网与滤子}
+\label{ch1:sec:tails-neighborhoods}
+
+\paragraph{先看有限要求怎样合并。}
+取 $a<b$，把区间 $[a,b]$ 的有限分割看成包含端点的有限点集，并约定
+\[
+ P\preceq Q\quad\Longleftrightarrow\quad P\subseteq Q.
+\]
+因此 $Q$ 保留了 $P$ 的全部分点，还可能加入新的分点。沿着
+$P_1\preceq P_2\preceq\cdots$ 选择分割，称为\emph{逐步加细}；这里的“逐步”
+只表示这条链上的包含关系，并不保证它能满足所有可能的有限要求。
+
+两个分割 $P,Q$ 的分点并 $P\cup Q$ 仍是分割，且同时满足
+$P\preceq P\cup Q$ 与 $Q\preceq P\cup Q$。图~\ref{fig:ch1-finite-requirements}
+的左半部把这个共同后继画出来。右半部把一个有限坐标要求写成阶段 $J$：阶段越大，
+已经检查的坐标越多。
+
+\begin{diagram}
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm,>=Stealth,every node/.style={font=\scriptsize}]
+  \begin{scope}[xshift=0cm]
+    \draw[thick] (0,2.05)--(5.2,2.05);
+    \foreach \x in {0,0.9,3.1,5.2}
+      \draw[Navy,thick] (\x,1.9)--(\x,2.2);
+    \node[left] at (0,2.05) {$P$};
+    \draw[thick] (0,1.25)--(5.2,1.25);
+    \foreach \x in {0,1.45,2.25,4.15,5.2}
+      \draw[Red,thick] (\x,1.1)--(\x,1.4);
+    \node[left] at (0,1.25) {$Q$};
+    \draw[thick] (0,.35)--(5.2,.35);
+    \foreach \x in {0,0.9,1.45,2.25,3.1,4.15,5.2}
+      \draw[Green,thick] (\x,.2)--(\x,.5);
+    \node[left] at (0,.35) {$P\cup Q$};
+    \draw[->,Navy] (2.6,1.9)--(2.6,.62);
+    \draw[->,Red] (3.0,1.1)--(3.0,.62);
+    \node[align=center] at (2.6,-.15) {分点并集\\给出共同后继};
+  \end{scope}
+  \begin{scope}[xshift=7cm]
+    \node[draw,rounded corners,fill=BlueBack,inner sep=3pt] (j1) at (0,1.7) {$J_1=\{i_1\}$};
+    \node[draw,rounded corners,fill=BlueBack,inner sep=3pt] (j2) at (2.15,1.7) {$J_2=\{i_1,i_2\}$};
+    \node[draw,rounded corners,fill=GreenBack,inner sep=3pt] (j3) at (4.3,1.7) {$J_3=\{i_1,i_2,i_3\}$};
+    \node[draw,rounded corners,fill=GreenBack,inner sep=3pt] (jn) at (6.15,1.7) {$J_n$};
+    \draw[->] (j1)--node[above] {加入要求}(j2);
+    \draw[->] (j2)--(j3);
+    \draw[->,dashed] (j3)--node[above] {$\cdots$}(jn);
+    \draw[dashed,Red] (6.15,1.15)--(6.15,.45);
+    \node[Red,align=center] at (6.15,.05) {整条序列仍只涉及\\可数多个坐标};
+    \node[align=center] at (2.15,-.55) {有限阶段的包含关系\\允许共同后继};
+  \end{scope}
+\end{tikzpicture}
+\par\smallskip
+\refstepcounter{figure}\label{fig:ch1-finite-requirements}
+\textbf{图~\thefigure\quad 有限要求的共同后继。} 左图的绿色分点同时保留蓝、红两组要求；
+右图的箭头表示有限坐标集的包含关系，虚线提醒一条预先排好的序列仍只会触及可数坐标。
+\end{diagram}
+
+右图只画出一条可能的有限阶段链，并没有声称它已经覆盖全部要求；“共尾”要对每一个
+有限要求给出一个后继，正是随后引入更大指标集的理由。
+
+为了准确说明“共尾”，设 $D$ 是集合，关系 $\preceq$ 自反且传递。子集 $C\subseteq D$ 称为\emph{共尾}
+的，是指
+\begin{equation}\label{eq:ch1-cofinal}
+ \forall d\in D\ \exists c\in C\quad d\preceq c.
+\end{equation}
+一条逐步加细的链只有在其像满足 $\eqref{eq:ch1-cofinal}$ 时，才可以代表整个阶段族。对任意分割序列
+$(P_n)$，并集 $\bigcup_nP_n$ 至多可数；选取
+$t\in(a,b)\setminus\bigcup_nP_n$，并令 $P_t=\{a,t,b\}$。若存在 $n$ 使
+$P_t\preceq P_n$，就必须有 $t\in P_n$，这与选取矛盾。因此这些 $P_n$ 的像不共尾。
+
+同一件事可以在不可数坐标上逐项核对。令 $I$ 不可数，
+\[
+ A=\{a\in\{0,1\}^{I}:\operatorname{supp}a\text{ 有限}\},
+ \qquad \operatorname{supp}a=\{i:a(i)\ne0\},
+\]
+并令 $\mathbf1(i)=1$。对有限 $J\subset I$，写
+\[
+ N(\mathbf1;J)=\{g:g|_J=\mathbf1|_J\}.
+\]
+点 $a_J=\one_J$ 属于 $A\cap N(\mathbf1;J)$，所以每个有限坐标邻域都与 $A$ 相交。
+反过来，若 $(a_n)\subset A$，则
+$S=\bigcup_n\operatorname{supp}a_n$ 至多可数；取 $i_0\in I\setminus S$，就有
+$a_n(i_0)=0$ 对所有 $n$ 成立，而
+\[
+ N(\mathbf1;\{i_0\})=\{g:g(i_0)=1\}
+\]
+不含任何 $a_n$。图中的右半部正是这两条量词的对照：每个有限 $J$ 都能被某个阶段满足，
+一条序列却无法覆盖不可数的坐标要求。
+
+这两个例子提示一个共同的记号：我们需要把“对每个阶段找到一个后继”和数列中的
+“从某项起一直成立”写进同一套语言。接下来的定义完成这件事；分割与有限坐标例子会
+继续充当检验定义的两个模型。
+
+\subsection{网、子网与聚点}
+\label{ch1:subsec:nets}
+
+数列以 $\mathbb N$ 为指标，因此适合具有可数共尾结构的问题。分割的加细、不可数
+坐标上的有限约束以及一般拓扑空间的邻域系，往往没有这样的可数索引。有向集和网
+可以在这些情形下表述闭包、连续性与聚点。
+
+\begin{definition}[有向集]
+设 \(D\) 为集合。\(D\) 上一个自反、传递的二元关系 \(\preceq\) 称为
+\emph{预序}。若 \(D\neq\varnothing\)，且对任意 \(d_1,d_2\in D\)，存在
+\(d_3\in D\) 使
+\[
+ d_1\preceq d_3,\qquad d_2\preceq d_3,
+\]
+则称 \((D,\preceq)\) 为\emph{有向集}。这里不要求反对称性；不同的指标可以
+代表同一个阶段。
+\end{definition}
+
+二元共同上界已经蕴含任意有限多个元素有共同上界：对元素个数作归纳，每次把
+已经取得的上界与下一个元素再取共同上界即可。这正对应“有限批要求可以同时满足”。
+
+\begin{definition}[网、最终成立与频繁成立]
+从有向集 \(D\) 到集合 \(X\) 的映射 \(x\colon D\to X\) 称为 \(X\) 中的
+\emph{网}，记作 \((x_d)_{d\in D}\)。
+
+对 \(d_0\in D\)，记
+\[
+ D_{\succeq d_0}=\{d\in D:d\succeq d_0\}
+\]
+为从 \(d_0\) 开始的尾部；由自反性 \(d_0\in D_{\succeq d_0}\)，所以每条尾部
+非空。对依赖于 \(d\) 的性质 \(P(d)\)，若存在
+\(d_0\in D\) 使
+\[
+ P(d)\quad\text{对每一个 }d\in D_{\succeq d_0}\text{ 成立},
+\]
+则称 \(P\) \emph{最终成立}。若
+\[
+ \forall d_0\in D\ \exists d\in D_{\succeq d_0}\quad P(d),
+\]
+则称 \(P\) \emph{频繁成立}。这两个定义中的量词分别对应“某一条尾部
+全部满足”和“每一条尾部至少有一次满足”。
+\end{definition}
+
+数列是以 \(\mathbb N\) 为指标的网。新定义并未改变数列极限中的尾部量词，只是
+允许“更晚”由问题本身决定。
+
+\begin{example}[有限测试条件形成的方向]
+设 \(X\) 为集合，\(I\) 为任意集合，记
+\[
+ \operatorname{Fin}(I)=\{F\subseteq I:F\text{ 为有限集}\},
+\]
+并以包含关系为预序。空集属于 \(\operatorname{Fin}(I)\)，而
+\(F_1\cup F_2\) 是 \(F_1,F_2\) 的共同上界，所以它是有向集。
+
+若 \((f_i:X\to\mathbb R)_{i\in I}\) 是一族测试函数，则阶段 \(F\) 表示同时控制所有
+\(i\in F\) 的 \(f_i\)。一旦这种控制在扩大 \(F\) 时得以保留，“最终控制每个固定
+\(i\)”就表示从阶段 \(\{i\}\) 起始终保持该条件，并不要求 \(I\) 可数。由测试类
+确定测度或由有限维边缘确定概率律时，也会出现这种有限测试方向。
+\end{example}
+
+\begin{example}[任何分割序列都会漏掉一个加细要求]
+继续设 \(a<b\)。把一个有限分割视为包含端点 \(a,b\) 的有限点集；令
+\[
+ D=\{P\subseteq[a,b]:P\text{ 有限且 }a,b\in P\}.
+\]
+并约定
+\[
+ P\preceq Q\quad\Longleftrightarrow\quad P\subseteq Q;
+\]
+右边把分割看作包含端点的有限分点集。两个分割的并仍是分割，并且是共同上界，
+故 \(D\) 有向。
+
+对任意序列 \((P_n)\subseteq D\)，取
+\(t\in(a,b)\setminus\bigcup_nP_n\)。令 \(P=\{a,t,b\}\)。若 \(P_n\succeq P\)，
+则应有 \(t\in P_n\)，这与 \(t\) 的选取冲突。因此 \((P_n)\) 的像在 \(D\)
+中不共尾：它漏掉的并非一个数值，而是一项确定的加细要求。
+\end{example}
+
+现在加入拓扑。回忆，点 \(x\) 的邻域是包含某个含 \(x\) 开集的集合。
+对拓扑空间 \(X\) 的子集 \(A\subseteq X\)，记其闭包为
+\[
+ \overline A^{\,X}
+   =\bigcap\{F\subseteq X:F\text{ 闭且 }A\subseteq F\}.
+\]
+等价地，\(x\in\overline A^{\,X}\) 当且仅当 \(x\) 的每个邻域都与 \(A\)
+相交。空间明确时，将上标 \(X\) 省略。
+
+\begin{definition}[网的收敛与聚点]
+设 \(X\) 为拓扑空间，\((x_d)_{d\in D}\) 是 \(X\) 中的网。
+若对 \(x\) 的每个邻域 \(U\)，性质 \(x_d\in U\) 最终成立，则称
+\(x_d\) \emph{收敛到} \(x\)，记作 \(x_d\to x\)。
+
+若对 \(x\) 的每个邻域 \(U\)，性质 \(x_d\in U\) 频繁成立，则称 \(x\) 为
+该网的\emph{聚点}。收敛要求每条尾部最终留在每个邻域内；聚点只要求每条尾部
+仍能回到每个邻域。
+\end{definition}
+
+\begin{example}[有限坐标网与序列闭包]
+设 \(I\) 不可数，并令
+\[
+ A=\{a\in\{0,1\}^I:\operatorname{supp}a\text{ 为有限集}\},
+ \qquad
+ \operatorname{supp}a=\{i\in I:a(i)\neq0\}.
+\]
+对 \(f\in\{0,1\}^I\) 与有限集 \(J\subseteq I\)，记
+\[
+ N(f;J)=\{g\in\{0,1\}^I:g|_J=f|_J\}.
+\]
+以 \(N(f;J)\) 作为 \(f\) 的基本邻域；这些基本邻域生成乘积拓扑。
+
+以 \(\operatorname{Fin}(I)\) 按包含关系定向，并定义
+\[
+ x_F(i)=
+ \begin{cases}
+ 1,&i\in F,\\
+ 0,&i\notin F.
+ \end{cases}
+\]
+每个 \(x_F\) 都属于 \(A\)。给定 \(\one\) 的基本邻域
+\(N(\one;J)\)，只要 \(F\supseteq J\)，便有 \(x_F|_J=\one|_J\)。因此
+\(x_F\to\one\)。
+
+另一方面，若 \((a_n)\subseteq A\)，则
+\(S=\bigcup_n\operatorname{supp}a_n\) 至多可数。取 \(i_0\in I\setminus S\)，
+便有 \(a_n(i_0)=0\) 对每个 \(n\) 成立。基本邻域
+\[
+ N(\one;\{i_0\})=\{g:g(i_0)=1\}
+\]
+不含序列的任何一项，所以 \((a_n)\) 不收敛到 \(\one\)。因此仅用 $A$ 中的
+序列不能刻画这里的闭包；有限坐标网却收敛到 \(\one\)。
+\end{example}
+
+\begin{example}[无序非负和的有限子集网]
+\label{ch1:exa:worked-unordered-sums}
+设 $I$ 是任意指标集，对每个 $i\in I$ 给定
+$a_i\in[0,+\infty]$。当 $I$ 不可数时，不应先枚举它再谈“部分和”。
+只依赖有限加法的近似是
+\[
+ S_F=\sum_{i\in F}a_i,
+ \qquad F\in\operatorname{Fin}(I),
+\]
+并让有限集按包含关系定向。这个网的极限可直接由有限和计算。
+
+\medskip
+\noindent 有限和的上确界。
+由非负性，$F\subseteq G$ 时 $S_F\leq S_G$。令
+\[
+ S=\sup\{S_F:F\in\operatorname{Fin}(I)\}\in[0,+\infty].
+\]
+若 $S<+\infty$，给定 $\varepsilon>0$，上确界的定义给出
+某个有限集 $F_0$ 使 $S_{F_0}>S-\varepsilon$。于是对每个
+$F\supseteq F_0$，
+\[
+ S-\varepsilon<S_{F_0}\leq S_F\leq S.
+\]
+这恰好说明 $S_F\to S$。若 $S=+\infty$，则对每个
+$M>0$ 可取 $F_0$ 使 $S_{F_0}>M$；单调性保证每个后继
+$F\supseteq F_0$ 都有 $S_F>M$，故该网在扩展实数中趋于
+$+\infty$。
+
+\medskip
+\noindent 有限总和的可数支撑。
+现设 $S<+\infty$。对 $m\geq1$令
+\[
+ I_m=\{i\in I:a_i\geq1/m\}.
+\]
+若 $I_m$ 无限，便可在其中取任意多个不同指标；取整数
+$N>mS$ 及 $F\subseteq I_m$ 使 $|F|=N$，就有
+\[
+ S_F=\sum_{i\in F}a_i\geq\frac Nm>S,
+\]
+与 $S$ 是所有有限和的上界矛盾。所以每个 $I_m$ 有限。而
+\[
+ \{i:a_i>0\}=\bigcup_{m\geq1}I_m,
+\]
+因而至多可数。由此可见，当 $S<+\infty$ 时只有至多可数个非零项；此后才可以
+枚举这些非零项并改写成通常的级数。
+
+\medskip
+\noindent 一个无序和模型。
+令 $I=[0,1]$，并规定
+\[
+ a_t=
+ \begin{cases}
+ 2^{-n},&t=1/n\text{ 且 }n\geq1,\\
+ 0,&\text{其余情形}.
+ \end{cases}
+\]
+给定 $\varepsilon>0$，取 $N$ 使 $2^{-N}<\varepsilon$，再取
+$F_0=\{1,1/2,\ldots,1/N\}$。对每个 $F\supseteq F_0$，
+\[
+ 0\leq1-S_F
+ \leq\sum_{n>N}2^{-n}=2^{-N}<\varepsilon,
+\]
+所以有限子集网收敛到 $1$；有限子集的包含方向直接给出了这个极限。
+
+非负性保证有限子和随指标单调，并排除正负抵消。若允许任意符号，同一可数族的和可能依赖排列，
+此时 $\sup_FS_F$ 不能作为无序求和的定义。
+\end{example}
+
+全部网的收敛资料事实上足以恢复整个拓扑。
+
+\begin{proposition}[网收敛完全决定拓扑]
+给定集合 \(X\) 上的两个拓扑 \(\tau_1,\tau_2\)。若每个网在两种拓扑下有完全
+相同的极限，则 \(\tau_1=\tau_2\)。
+\label{ch1:prop:nets-determine-topology}
+\end{proposition}
+
+\begin{proof}
+先证 \(\tau_1\subseteq\tau_2\)。反设存在 \(U\in\tau_1\setminus\tau_2\)。因为
+\(U\) 不是 \(\tau_2\)-开集，存在 \(x\in U\)，使得 \(x\) 的每个
+\(\tau_2\)-邻域都与 \(X\setminus U\) 相交。令
+\[
+ D=\{(V,y):V\text{ 是 }x\text{ 的 }\tau_2\text{-邻域},\ y\in V\setminus U\},
+\]
+并定义
+\[
+ (V,y)\preceq(W,z)\quad\Longleftrightarrow\quad W\subseteq V.
+\]
+集合 \(D\) 非空。给定 \((V_1,y_1),(V_2,y_2)\in D\)，交集
+\(V_1\cap V_2\) 仍是 \(x\) 的邻域，因而存在
+\(z\in(V_1\cap V_2)\setminus U\)。于是
+\((V_1\cap V_2,z)\) 是两指标的共同上界，故 \(D\) 有向。
+
+在 \(D\) 上取网
+\[
+ y_{(V,y)}=y.
+\]
+任给 \(x\) 的 \(\tau_2\)-邻域 \(O\)。取 \(y_0\in O\setminus U\)，则越过
+指标 \((O,y_0)\) 后，每个指标 \((V,y)\) 都满足 \(V\subseteq O\)，从而
+\(y\in O\)。所以该网在 \(\tau_2\) 下收敛到 \(x\)。它的每一项都在
+\(X\setminus U\) 中，而 \(U\) 是 \(x\) 的 \(\tau_1\)-邻域，故它在
+\(\tau_1\) 下不收敛到 \(x\)。这与假设冲突，因而
+\(\tau_1\subseteq\tau_2\)。交换两个拓扑的角色可得反向包含。
+\end{proof}
+
+邻域与其中的见证点组成有向指标集，把“每个邻域都与 \(A\) 相交”转化为
+一条收敛到该点的网。
+
+\begin{proposition}[闭包的网判据]
+对拓扑空间 \(X\)、子集 \(A\subseteq X\) 与点 \(x\in X\)，以下条件等价：
+\begin{enumerate}
+  \item \(x\in\overline A\)；
+  \item 存在完全取值于 \(A\) 的网收敛到 \(x\)。
+\end{enumerate}
+\label{ch1:prop:closure-net}
+\end{proposition}
+
+\begin{proof}
+设 \(x\in\overline A\)。每个 \(x\) 的邻域都与 \(A\) 相交。令
+\[
+ D=\{(U,a):U\text{ 是 }x\text{ 的邻域},\ a\in U\cap A\},
+\]
+并按邻域反向包含定向：
+\[
+ (U,a)\preceq(V,b)\quad\Longleftrightarrow\quad V\subseteq U.
+\]
+对 \((U,a),(V,b)\in D\)，从 \((U\cap V)\cap A\neq\varnothing\) 取一点
+\(c\)。于是 \((U\cap V,c)\) 是共同上界，故 \(D\) 有向。定义
+\(x_{(U,a)}=a\in A\)。给定 \(x\) 的邻域 \(W\)，取
+\(a_0\in W\cap A\)。越过 \((W,a_0)\) 后，指标中的邻域包含于 \(W\)，相应网项
+也属于 \(W\)。所以该网收敛到 \(x\)。
+
+反之，设 \(A\) 中的网 \((x_d)\) 收敛到 \(x\)。对 \(x\) 的任意邻域 \(U\)，
+存在 \(d_0\) 使 \(x_d\in U\) 对所有 \(d\succeq d_0\) 成立。特别地，
+\(x_{d_0}\in U\cap A\)。因此每个 \(x\) 的邻域都与 \(A\) 相交，即
+\(x\in\overline A\)。
+\end{proof}
+
+若一条网已经收敛，删去开头一段或沿着足够深入的指标重新取样，不应改变其极限。
+这引出子网。重新取样时还要求新指标最终越过原来的每个阶段。
+
+\begin{definition}[子网]
+设 \(x\colon D\to X\) 为网。设 \(E\) 是有向集，且
+\(\phi\colon E\to D\) 满足：
+\begin{enumerate}
+  \item \(\phi\) 递增，即 \(e_1\preceq e_2\) 蕴含
+        \(\phi(e_1)\preceq\phi(e_2)\)；
+  \item 对每个 \(d_0\in D\)，存在 \(e_0\in E\)，使得
+        \[
+        e\succeq e_0\quad\Longrightarrow\quad \phi(e)\succeq d_0.
+        \]
+\end{enumerate}
+则称 \((x_{\phi(e)})_{e\in E}\) 为 \((x_d)_{d\in D}\) 的\emph{子网}。
+
+若对每个 \(d_0\in D\) 都存在 \(e\in E\) 使 \(\phi(e)\succeq d_0\)，则称
+\(\phi(E)\) 在 \(D\) 中\emph{共尾}。在 \(\phi\) 递增时，共尾性与条件~2
+等价：取得一个越过 \(d_0\) 的 \(e_0\) 后，递增性保证所有
+\(e\succeq e_0\) 的像仍越过 \(d_0\)。
+\end{definition}
+
+\begin{remark}[子网定义的两种约定]
+以下采用“保序 $+$ 最终越过每个原指标”的定义。有些教材只要求条件~2，而不要求
+映射保序，由此得到较宽的子网概念。两种约定都保持极限，但不能混用；这里的“子网”
+均指上述较强约定，聚点定理中的构造也同时满足这两个条件。
+\end{remark}
+
+\begin{lemma}[子网保持极限]
+若 \(x_d\to x\)，则网 \((x_d)\) 的每个子网都收敛到 \(x\)。
+\label{ch1:lem:subnet-limit}
+\end{lemma}
+
+\begin{proof}
+设 \((x_{\phi(e)})_{e\in E}\) 是子网。给定 \(x\) 的邻域 \(U\)，取
+\(d_0\in D\)，使 \(d\succeq d_0\) 时 \(x_d\in U\)。由子网映射的条件~2，
+存在 \(e_0\in E\)，使 \(e\succeq e_0\) 时 \(\phi(e)\succeq d_0\)。因此
+\(e\succeq e_0\) 时 \(x_{\phi(e)}\in U\)，这就是子网收敛到 \(x\)。
+\end{proof}
+
+\begin{lemma}[最终与频繁的否定关系]
+对网 \((x_d)\) 与集合 \(A\subseteq X\)，有
+\[
+ \neg\bigl(x_d\text{ 最终属于 }A\bigr)
+ \quad\Longleftrightarrow\quad
+ x_d\text{ 频繁属于 }X\setminus A.
+\]
+因此，\(x\) 是该网的聚点，当且仅当该网不最终避开 \(x\) 的任何邻域。
+\label{ch1:lem:eventually-frequently}
+\end{lemma}
+
+\begin{proof}
+“\(x_d\) 最终属于 \(A\)”的量词形式是
+\[
+ \exists d_0\in D\ \forall d\in D_{\succeq d_0},\quad x_d\in A.
+\]
+否定它得到
+\[
+ \forall d_0\in D\ \exists d\in D_{\succeq d_0},\quad x_d\notin A,
+\]
+这正是 \(x_d\) 频繁属于 \(X\setminus A\) 的定义。对每个 \(x\) 的邻域
+逐一应用此等价关系，便得到最后一句。
+\end{proof}
+
+\begin{theorem}[聚点与收敛子网]
+点 \(x\) 是网 \((x_d)_{d\in D}\) 的聚点，当且仅当该网有一个收敛到 \(x\)
+的子网。
+\label{ch1:thm:cluster-subnet}
+\end{theorem}
+
+
+\begin{proof}
+先设 \(x\) 是聚点。令 \(E\) 为所有三元组
+\[
+ (d,U,e),
+\]
+其中 \(d,e\in D\)，\(U\) 是 \(x\) 的邻域，且
+\(e\succeq d\)、\(x_e\in U\)。因为 \(D\neq\varnothing\)，任取 \(d\in D\)，
+三元组 \((d,X,d)\) 属于 \(E\)，所以 \(E\neq\varnothing\)。规定
+\[
+ (d,U,e)\preceq(d',U',e')
+ \quad\Longleftrightarrow\quad
+ d\preceq d',\quad U'\subseteq U,\quad e\preceq e'.
+\]
+这是预序（不同三元组可能彼此等价）。给定 \((d_1,U_1,e_1)\) 与
+\((d_2,U_2,e_2)\)，有向性（先两两取共同上界，再有限次归纳）给出同时越过
+\(d_1,d_2,e_1,e_2\) 的元素 \(d'\)。由于 \(x\) 是聚点，存在 \(e'\succeq d'\) 使
+\(x_{e'}\in U_1\cap U_2\)。于是
+\[
+ (d',U_1\cap U_2,e')\in E
+\]
+是原来两个三元组的共同上界。因此 \(E\) 是有向集。
+
+定义 \(\phi\colon E\to D\) 为 \(\phi(d,U,e)=e\)。由 \(E\) 上的次序定义，
+\(\phi\) 递增。给定 \(d_0\in D\)，指标 \(\eta_0=(d_0,X,d_0)\) 属于
+\(E\)；若 \(\eta=(d,U,e)\succeq\eta_0\)，则按关系定义必有
+\(e\succeq d_0\)。因此
+\[
+ \forall d_0\in D\ \exists\eta_0\in E\ \forall\eta\succeq\eta_0,\qquad
+ \phi(\eta)\succeq d_0,
+\]
+即 \(\phi\) 满足子网定义中的最终越过条件，
+\((x_{\phi(\eta)})_{\eta\in E}\) 是原网的子网。
+
+再证它收敛到 \(x\)。给定 \(x\) 的邻域 \(U\)，取任意 \(d\in D\)。聚点条件
+给出 \(e\succeq d\) 使 \(x_e\in U\)，故 \(\eta_0=(d,U,e)\in E\)。若
+\(\eta=(d',U',e')\succeq\eta_0\)，则 \(U'\subseteq U\)，而三元组属于 \(E\)
+保证 \(x_{e'}\in U'\)。因此
+\[
+ \eta\succeq\eta_0\quad\Longrightarrow\quad
+ x_{\phi(\eta)}=x_{e'}\in U,
+\]
+这正是该子网收敛到 \(x\) 的定义。
+
+反之，设原网有子网 \((x_{\phi(e)})_{e\in E}\) 收敛到 \(x\)。若 \(x\) 不是
+原网的聚点，则由 \cref{ch1:lem:eventually-frequently}，存在 \(x\) 的邻域 \(U\)
+和 \(d_0\in D\)，使
+\[
+ d\succeq d_0\quad\Longrightarrow\quad x_d\notin U.
+\]
+子网条件给出 \(e_0\)，使 \(e\succeq e_0\) 时 \(\phi(e)\succeq d_0\)，所以该
+子网最终位于 \(X\setminus U\)。另一方面，子网收敛到 \(x\)，所以它最终位于
+\(U\)。在 \(E\) 中取同时越过这两个阶段的指标，所得网项必须同时属于 \(U\)
+和 \(X\setminus U\)，矛盾。因此 \(x\) 是原网的聚点。
+\end{proof}
+
+\begin{remark}[有向性、聚点与共尾性]
+有向性用来合并有限多个旧指标；聚点条件保证在任一给定指标之后仍能找到落入指定
+邻域的网项；共尾性则保证重新取样最终越过原网的每个指标。仅从原网中选取许多项
+并不足以得到子网：若所选指标始终停留在原有向集的某个非共尾部分，即使所得新网
+收敛，也不能据此推出原网在该点聚集。对数列而言，严格递增的子列指标自动共尾；
+对一般有向集，这两项条件需要分别说明。
+\end{remark}
+
+\begin{counterexample}[序列看不见的闭包]
+令 \(X\) 为不可数集合，赋予余可数拓扑：\(G\subseteq X\) 为开集，当且仅当
+\(G=\varnothing\) 或 \(X\setminus G\) 至多可数。固定 \(p\in X\)，令
+\(A=X\setminus\{p\}\)。
+
+若 \(U\) 是 \(p\) 的邻域，则它包含一个含 \(p\) 的开集 \(G\)。集合 \(G\)
+不能包含于 \(\{p\}\)，因为那会使 \(X\setminus G\) 不可数；故
+\(U\cap A\supseteq G\cap A\neq\varnothing\)。因此 \(p\in\overline A\)。
+
+但对任意序列 \((a_n)\subseteq A\)，其值域
+\(R=\{a_n:n\geq1\}\) 至多可数。集合 \(X\setminus R\) 是含 \(p\) 的开邻域，
+且不含任何 \(a_n\)，所以该序列不收敛到 \(p\)。与此相对，
+\cref{ch1:prop:closure-net} 给出的邻域见证网完全取值于 \(A\) 并收敛到 \(p\)。
+\end{counterexample}
+
+\begin{example}[带标记分割的加细网]
+一个带标记有限分割写作
+\[
+ P=(a=t_0<t_1<\cdots<t_n=b;\ \xi_k\in[t_{k-1},t_k]).
+\]
+比较两个带标记分割时，只比较底层分点：规定 \(Q\succeq P\) 当且仅当 \(Q\)
+包含 \(P\) 的全部分点，标签不参与次序。给定 \(P,Q\)，合并它们的分点，并在
+合并后每个小区间内取一个标签，就得到共同后继。两个底层分点相同而标签不同的
+分割会彼此 \(\preceq\)，所以这里得到的是有向预序，不必是偏序。
+
+若函数 \(f\) 的 Riemann 和 \(S(f,P)\) 沿这个分割网收敛，则其含义是：给定
+误差要求，存在一个有限分割，使每个进一步加细的带标记分割都满足该要求。这个
+尾部条件由分割的几何加细关系决定。
+\end{example}
+
+\begin{example}[带标记分割网的误差估计]
+\label{ch1:exa:worked-riemann-refinement}
+对 $f(x)=x^2$ 在 $[0,1]$ 上，带标记分割网的误差可以由分割网格统一控制。
+若
+\[
+ P=(0=t_0<t_1<\cdots<t_m=1;\ \xi_k\in[t_{k-1},t_k]),
+\]
+记 $\Delta_k=t_k-t_{k-1}$ 且
+\[
+ R(P)=\sum_{k=1}^m\xi_k^2\Delta_k,
+ \qquad \operatorname{mesh}(P)=\max_k\Delta_k.
+\]
+
+\medskip
+\noindent 每个小区间的误差只由它的长度决定。
+当 $u\leq\xi\leq v$ 且 $0\leq u<v\leq1$ 时，
+\[
+ \sup_{x,y\in[u,v]}|x^2-y^2|
+ =(v-u)(v+u)\leq2(v-u).
+\]
+因而，把常数 $\xi^2$ 与函数 $x^2$ 在该区间上积分得
+\[
+ \left|\xi^2(v-u)-\int_u^v x^2\,dx\right|
+ \leq 2(v-u)^2.
+\]
+对分割的所有小区间求和，并用
+$\sum_k\Delta_k=1$，得到与标记无关的界
+\begin{equation}
+ \left|R(P)-\frac13\right|
+ \leq2\sum_{k=1}^m\Delta_k^2
+ \leq2\operatorname{mesh}(P)\sum_{k=1}^m\Delta_k
+ =2\operatorname{mesh}(P).
+ \label{ch1:eq:worked-riemann-error}
+\end{equation}
+
+\medskip
+\noindent 由统一分割控制全部后继。
+给定 $\varepsilon>0$，取整数 $N>2/\varepsilon$，并令
+\[
+ Q_N=\{0,1/N,2/N,\ldots,1\}.
+\]
+任意后继分割 $P\succeq Q_N$ 都含有 $Q_N$ 的全部分点，因此 $P$ 的每个小区间
+都包含在两个相邻的 $Q_N$ 分点之间，所以 $\operatorname{mesh}(P)\leq1/N$。无论每个小区间
+如何选标记，式 \eqref{ch1:eq:worked-riemann-error} 都给出
+\[
+ \left|R(P)-\frac13\right|\leq\frac2N<\varepsilon.
+\]
+因此带标记分割网收敛到 $1/3$。该估计从 $Q_N$ 开始对所有加细和所有标记同时成立。
+
+\medskip
+\noindent 均匀分割序列。
+均匀分割 $(Q_N)$ 在全体分割偏序中不共尾：一个无理分点不在任何 $Q_N$ 中。
+对这个特定函数，误差只依赖 mesh，因此均匀分割序列仍足以算出同一极限；这一结论来自函数的正则性。
+
+\medskip
+不等式 $|x^2-y^2|\leq2|x-y|$ 提供了统一振幅控制。如果只假设
+函数有界，结论会失败：对 Dirichlet 函数
+\[
+ g=\one_{\mathbb Q\cap[0,1]},
+\]
+在每个小区间选有理标记时 Riemann 和恒为 $1$，选无理标记时恒为
+$0$。给定任意底层分割，都可以在它的任意加细上分别作这两种标记，因此每条尾部
+都同时出现取值 $0$ 和 $1$ 的 Riemann 和，网不可能收敛。共同加细本身并不足以
+保证带标记 Riemann 和具有共同极限。
+\end{example}
+
+网不仅刻画闭包，也刻画连续性。
+
+\begin{proposition}[连续性的网判据]
+映射 \(f\colon X\to Y\) 在 \(x\in X\) 连续，当且仅当对每个收敛到 \(x\) 的网
+\((x_d)\)，都有 \(f(x_d)\to f(x)\)。
+\label{ch1:prop:continuity-net}
+\end{proposition}
+
+\begin{proof}
+先设 \(f\) 在 \(x\) 连续，并令 \(x_d\to x\)。给定 \(f(x)\) 的邻域 \(V\)，
+连续性保证 \(f^{-1}(V)\) 是 \(x\) 的邻域。于是 \(x_d\) 最终属于
+\(f^{-1}(V)\)，等价地，\(f(x_d)\) 最终属于 \(V\)。因此
+\(f(x_d)\to f(x)\)。
+
+反之，设 \(f\) 在 \(x\) 不连续。存在 \(f(x)\) 的邻域 \(V\)，使
+\(f^{-1}(V)\) 不是 \(x\) 的邻域。因而 \(x\) 的每个邻域 \(U\) 都含有一点
+\(u\) 满足 \(f(u)\notin V\)。令
+\[
+ D=\{(U,u):U\text{ 是 }x\text{ 的邻域},\ u\in U,\ f(u)\notin V\},
+\]
+仍按邻域反向包含定向，并取网 \(x_{(U,u)}=u\)。与
+\cref{ch1:prop:closure-net} 中的见证网相同，两个指标由交邻域中的一个见证点给出
+共同上界；给定邻域 \(W\)，越过任一 \((W,w)\in D\) 后，网项都在 \(W\) 中。
+所以此网收敛到 \(x\)。然而它的像网从不进入 \(V\)，从而不收敛到 \(f(x)\)。
+这与题设的网保持极限性质冲突。
+\end{proof}
+
+\begin{proposition}[开闭集的纯收敛刻画]
+子集 \(F\subseteq X\) 闭，当且仅当每个完全取值于 \(F\) 且在 \(X\) 中收敛的网，
+其极限仍属于 \(F\)。等价地，\(U\subseteq X\) 开，当且仅当每个收敛到
+\(U\) 中一点的网最终进入 \(U\)。
+\label{ch1:prop:open-closed-net}
+\end{proposition}
+
+\begin{proof}
+若 \(F\) 闭，且 \(x_d\in F\)、\(x_d\to x\)，反设 \(x\notin F\)。开集
+\(X\setminus F\) 是 \(x\) 的邻域，所以 \(x_d\) 最终属于 \(X\setminus F\)，
+这与每项都在 \(F\) 中冲突。
+
+反之，设每个 \(F\) 中收敛网的极限仍在 \(F\)。若 \(x\in\overline F\)，由
+\cref{ch1:prop:closure-net}，存在 \(F\) 中的网收敛到 \(x\)，因而 \(x\in F\)。
+所以 \(\overline F\subseteq F\)，即 \(F\) 闭。
+
+若 \(U\) 开，且 \(x_d\to x\in U\)，则 \(U\) 本身是 \(x\) 的邻域，故网最终
+进入 \(U\)。反之，设所述最终进入性质成立。若 \(U\) 不开，则
+\(F=X\setminus U\) 不闭。于是存在 \(x\in\overline F\setminus F\)，即
+\(x\in U\)，并由闭包网判据得到一个 \(F\) 中的网收敛到 \(x\)。该网没有任何
+一项在 \(U\) 中，违背最终进入性质。因此 \(U\) 开。
+\end{proof}
+
+网的语言还能把下半连续性写成取极限时的一条不等式。此处允许函数取
+\(+\infty\)，因而可以用取值 $0$ 与 $+\infty$ 的函数表示闭集约束。
+
+\begin{definition}[拓扑下半连续与网的下极限]
+函数 \(f\colon X\to(-\infty,+\infty]\) 称为\emph{下半连续}，若对每个
+\(a\in\mathbb R\)，严格上水平集
+\[
+ \{x\in X:f(x)>a\}
+\]
+都是开集。
+
+对扩展实数网 \((r_d)_{d\in D}\)，定义
+\[
+ \liminf_d r_d
+ =\sup_{d_0\in D}\ \inf_{d\succeq d_0}r_d
+ \in[-\infty,+\infty].
+\]
+这里先在每条尾部上取下确界，再看这些尾部下界能够提高到何处。
+\end{definition}
+
+\begin{proposition}[下半连续的闭集与网判据]
+对 \(f\colon X\to(-\infty,+\infty]\)，以下三条等价：
+\begin{enumerate}
+  \item \(f\) 下半连续；
+  \item 对每个 \(a\in\mathbb R\)，下水平集 \(\{f\leq a\}\) 闭；
+  \item 对每个收敛网 \(x_d\to x\)，都有
+        \[
+        f(x)\leq\liminf_d f(x_d).
+        \]
+\end{enumerate}
+\label{ch1:prop:lsc-net}
+\end{proposition}
+
+\begin{proof}
+对每个 \(a\in\mathbb R\)，集合 \(\{f\leq a\}\) 与 \(\{f>a\}\) 互为补集，
+所以条件~1 与条件~2 等价。
+
+设条件~1 成立，且 \(x_d\to x\)。任取实数 \(a<f(x)\)。开集 \(\{f>a\}\)
+是 \(x\) 的邻域，故存在 \(d_a\in D\)，使 \(d\succeq d_a\) 时
+\(f(x_d)>a\)。于是
+\[
+ \inf_{d\succeq d_a}f(x_d)\geq a,
+ \qquad
+ \liminf_d f(x_d)\geq a.
+\]
+若 \(f(x)\in\mathbb R\)，令 \(a\uparrow f(x)\)，得到
+\(\liminf_df(x_d)\geq f(x)\)；若 \(f(x)=+\infty\)，上式对每个实数 \(a\)
+成立，因而下极限等于 \(+\infty\)。条件~3 得证。
+
+最后设条件~3 成立。固定 \(a\in\mathbb R\)，记 \(F_a=\{f\leq a\}\)。若
+\(x\in\overline{F_a}\)，由 \cref{ch1:prop:closure-net}，存在
+\((x_d)\subseteq F_a\) 收敛到 \(x\)。每个 \(f(x_d)\leq a\)，所以每条尾部的
+下确界不超过 \(a\)，进而
+\[
+ \liminf_d f(x_d)\leq a.
+\]
+条件~3 给出 \(f(x)\leq a\)，即 \(x\in F_a\)。因此
+\(\overline{F_a}\subseteq F_a\)，故 \(F_a\) 闭。条件~2 得证。
+\end{proof}
+
+\begin{example}[闭约束产生的扩展实值能量]
+给定 \(F\subseteq X\)，定义
+\[
+ I_F(x)=
+ \begin{cases}
+ 0,&x\in F,\\
+ +\infty,&x\notin F.
+ \end{cases}
+\]
+若 \(a<0\)，则 \(\{I_F\leq a\}=\varnothing\)；若 \(a\geq0\)，则
+\(\{I_F\leq a\}=F\)。由 \cref{ch1:prop:lsc-net}，\(I_F\) 下半连续当且仅当
+\(F\) 闭。
+
+这一等价也可以直接算出。设 \(F\) 闭，并任取收敛网 \(x_d\to x\)。若
+\(x\in F\)，则 \(I_F(x)=0\)，而 \(I_F(x_d)\geq0\) 对每个 \(d\) 成立，故
+\[
+ I_F(x)=0\leq\liminf_d I_F(x_d).
+\]
+若 \(x\notin F\)，开集 \(X\setminus F\) 是 \(x\) 的邻域，所以 \(x_d\) 最终
+属于 \(X\setminus F\)。从某条尾部开始 \(I_F(x_d)\) 恒为 \(+\infty\)，于是
+\[
+ \liminf_d I_F(x_d)=+\infty=I_F(x).
+\]
+这两种情形覆盖了每个收敛网，因而给出网下极限不等式。若 \(F\) 不闭，取
+\(x\in\overline F\setminus F\)；闭包网判据给出 \(F\) 中的网收敛到 \(x\)，
+此时
+\[
+ I_F(x)=+\infty,
+ \qquad
+ \liminf_d I_F(x_d)=0.
+\]
+下极限不等式失效。因此，$I_F$ 的下半连续性与 $F$ 的闭性完全等价。
+\end{example}
+
+\begin{proposition}[上确界保持下半连续]
+设 \(I\neq\varnothing\)，且 \((f_i)_{i\in I}\) 是一族从 \(X\) 到
+\((-\infty,+\infty]\) 的下半连续函数。则逐点上确界
+\[
+ f(x)=\sup_{i\in I}f_i(x)
+\]
+仍下半连续。特别地，任意非空族连续实值函数的逐点上确界下半连续。
+\label{ch1:prop:sup-lsc}
+\end{proposition}
+
+\begin{proof}
+对每个 \(a\in\mathbb R\)，有集合恒等式
+\[
+ \{x:f(x)>a\}=\bigcup_{i\in I}\{x:f_i(x)>a\}.
+\]
+右边每一项都是开集，故其并是开集。因此 \(f\) 下半连续。若 \(f_i\) 连续，
+则 \(\{f_i>a\}=f_i^{-1}((a,+\infty))\) 开，所以每个 \(f_i\) 都下半连续，
+前一结论可用。
+\end{proof}
+
+尾部量词与邻域之间的关系可以在一张局部图中核对。上行把有向要求翻译成尾部量词，
+再落到收敛与聚点；下行从邻域的反向包含构造见证网，最后回到闭包判据。图~\ref{fig:ch1-net-filter-bridge}
+中的每条实线都对应前面已经说明的一个翻译步骤，虚线表示两种构造可以相互核对。
+
+\begin{diagram}
+\centering
+\begin{tikzpicture}[
+  every node/.style={font=\small,align=center},
+  box/.style={draw,rounded corners,inner sep=5pt,text width=3.0cm},
+  >=Stealth]
+  \node[box] (directed) at (0,1.7) {有向要求\\有限批要求有共同后继};
+  \node[box] (tails) at (4.2,1.7) {尾部量词\\最终成立／频繁成立};
+  \node[box] (limits) at (8.4,1.7) {拓扑结论\\收敛／聚点};
+  \node[box] (neigh) at (0,-0.4) {邻域反向包含\\越小表示阶段越晚};
+  \node[box] (witness) at (4.2,-0.4) {邻域见证网\\指标同时记录要求与点};
+  \node[box] (criteria) at (8.4,-0.4) {闭包与连续性\\网判据};
+  \draw[->,thick] (directed)--(tails);
+  \draw[->,thick] (tails)--(limits);
+  \draw[->,thick] (neigh)--(witness);
+  \draw[->,thick] (witness)--(criteria);
+  \draw[->,thick,dashed] (neigh)--(directed);
+  \draw[->,thick,dashed] (witness)--(tails);
+  \draw[->,thick,dashed] (criteria)--(limits);
+  \node[draw=green!45!black,rounded corners,fill=green!7,inner sep=3pt]
+    at (6.3,0.65) {子网：保留“最终”，整理“频繁”};
+\end{tikzpicture}
+\par\smallskip
+\refstepcounter{figure}\label{fig:ch1-net-filter-bridge}
+\textbf{图~\thefigure\quad 从有向要求到拓扑判据。} 上排记录“阶段—尾部—极限”，
+下排记录“邻域—见证网—闭包”；虚线箭头表示同一有限交结构在两种语言中的对应。
+\end{diagram}
+
+\begin{remark}[见证网的构造]
+在 \cref{ch1:prop:nets-determine-topology,ch1:prop:closure-net} 以及
+\cref{ch1:thm:cluster-subnet} 中，指标集由全部合法的“邻域--见证点”组成。
+两个指标的共同后继来自相应邻域的有限交，这使有向性直接反映邻域系的有限交性质。
+余可数拓扑中的见证网同时表明：一般拓扑空间的闭包不能仅由序列刻画。
+\end{remark}
+
+
+\subsection{滤子、滤基与 Cauchy 结构}
+\label{ch1:subsec:filters}
+
+一条网既给出每个指标处的网值，也决定哪些集合最终包含这些网值。收敛性只依赖
+后一类集合。特别地，生成同一尾滤子的网有相同的极限和聚点，因此滤子可以直接
+用“最终包含网值的集合族”描述尾部行为，而不保留重复出现的网值或具体参数化。
+
+这一表述也适合讨论 Cauchy 性。Cauchy 条件只要求尾部中的点彼此接近，即使极限点
+尚未知道也可以定义；完备性则刻画这类滤子何时必然收敛。
+
+\begin{definition}[滤子]
+集合 \(X\) 上的\emph{滤子}是一个集合族
+\(\mathcal F\subseteq\mathcal P(X)\)，满足：
+\begin{enumerate}
+  \item \(X\in\mathcal F\)，且 \(\varnothing\notin\mathcal F\)；
+  \item 若 \(A,B\in\mathcal F\)，则 \(A\cap B\in\mathcal F\)；
+  \item 若 \(A\in\mathcal F\) 且 \(A\subseteq B\subseteq X\)，则
+        \(B\in\mathcal F\)。
+\end{enumerate}
+滤子中的集合常称为\emph{大集}。第二条说有限多个最终要求可以同时满足，第三条
+说放宽一个已经满足的要求仍然成立。
+\end{definition}
+
+\begin{example}[三个基本滤子]
+设 \(x\in X\)。所有含 \(x\) 的子集组成\emph{点 \(x\) 的主滤子}
+\[
+ \mathcal F_x^{\mathrm{pr}}=\{A\subseteq X:x\in A\}.
+\]
+两个含 \(x\) 的集合之交仍含 \(x\)，而任何包含它们之一的集合也含 \(x\)，
+所以三条滤子公理逐条成立。
+
+若 \(X\) 无限，所有余有限集组成 \emph{Fr\'echet 滤子}
+\[
+ \mathcal F_{\mathrm{cof}}=\{A\subseteq X:X\setminus A\text{ 为有限集}\}.
+\]
+空集不在其中，因为 \(X\) 无限；两个余有限集之交的补集是两个有限集之并；
+扩大余有限集只会缩小其补集。因此这也是滤子。
+
+若 \(X\) 是拓扑空间，则
+\[
+ \mathcal N(x)=
+ \{A\subseteq X:\text{存在开集 }U\text{ 使 }x\in U\subseteq A\}
+\]
+称为 \(x\) 的\emph{邻域滤子}。开邻域的有限交仍是开邻域，这保证
+\(\mathcal N(x)\) 满足有限交公理；其余两条由定义得到。前两个例子只使用集合
+结构，第三个滤子编码了点附近的拓扑。
+\end{example}
+
+滤子常由一族可以继续缩小的基本大集生成；其中的全部大集再由向上封闭性确定。
+
+\begin{definition}[滤基及其生成滤子]
+非空族 \(\mathcal B\subseteq\mathcal P(X)\) 称为\emph{滤基}，若
+\(\varnothing\notin\mathcal B\)，且对任意 \(B_1,B_2\in\mathcal B\)，存在
+\(B_3\in\mathcal B\) 使
+\[
+ B_3\subseteq B_1\cap B_2.
+\]
+由 \(\mathcal B\) 生成的滤子定义为
+\[
+ \langle\mathcal B\rangle
+ =\{A\subseteq X:\text{存在 }B\in\mathcal B\text{ 使 }B\subseteq A\}.
+\]
+\end{definition}
+
+滤基公理保证这个公式定义一个滤子。任取 \(B\in\mathcal B\)，有 \(B\subseteq X\)，故
+\(X\in\langle\mathcal B\rangle\)；没有基元素包含于空集，故
+\(\varnothing\notin\langle\mathcal B\rangle\)。若 \(A_1,A_2\) 分别包含
+\(B_1,B_2\in\mathcal B\)，取
+\(B_3\subseteq B_1\cap B_2\)，便有 \(B_3\subseteq A_1\cap A_2\)。向上封闭
+由定义直接得到。因此 \(\langle\mathcal B\rangle\) 的确是滤子；它还是包含
+\(\mathcal B\) 的最小滤子，因为任何包含 \(\mathcal B\) 的滤子都必须包含每个
+基元素的所有超集。
+
+\begin{proposition}[有限交性质的延拓]
+设非空族 \(\mathcal A\subseteq\mathcal P(X)\) 的任意有限子族都有非空交。
+则 \(\mathcal A\) 的所有有限交构成滤基，因而生成一个包含 \(\mathcal A\) 的
+滤子。反之，若某个滤子包含 \(\mathcal A\)，则 \(\mathcal A\) 具有有限交性质。
+\label{ch1:prop:fip-filter}
+\end{proposition}
+
+\begin{proof}
+令
+\[
+ \mathcal B=\left\{\bigcap_{k=1}^n A_k:
+ n\geq1,\ A_1,\ldots,A_n\in\mathcal A\right\}.
+\]
+由有限交性质，\(\mathcal B\) 不含空集。两个基元素的交仍是
+\(\mathcal A\) 中有限多个集合的交，因而本身属于 \(\mathcal B\)；可以取它
+作为滤基公理中的 \(B_3\)。每个 \(A\in\mathcal A\) 是一个长度为 \(1\) 的
+有限交，所以 \(\mathcal A\subseteq\mathcal B\subseteq
+\langle\mathcal B\rangle\)。
+
+反之，设滤子 \(\mathcal F\) 包含 \(\mathcal A\)。对任意
+\(A_1,\ldots,A_n\in\mathcal A\)，反复使用滤子的有限交公理可得
+\(A_1\cap\cdots\cap A_n\in\mathcal F\)。空集不属于 \(\mathcal F\)，所以这个
+有限交非空。
+\end{proof}
+
+\begin{counterexample}[为何不能任意求交]
+在 \(\mathbb N=\{1,2,\ldots\}\) 的 Fr\'echet 滤子中，集合
+\[
+ A_n=\{n,n+1,n+2,\ldots\}
+\]
+的补集有限，所以每个 \(A_n\) 都是大集。但
+\[
+ \bigcap_{n\geq1}A_n=\varnothing:
+\]
+给定 \(m\in\mathbb N\)，取 \(n=m+1\)，便有 \(m\notin A_n\)。因此滤子公理
+只保证有限交封闭；可数交若能保留信息，需要额外条件，例如测度的连续性。
+\end{counterexample}
+
+\begin{definition}[滤子的收敛与聚集]
+设 \(X\) 为拓扑空间。若
+\[
+ \mathcal N(x)\subseteq\mathcal F,
+\]
+则称滤子 \(\mathcal F\) \emph{收敛到} \(x\)，记作
+\(\mathcal F\to x\)。若对每个 \(F\in\mathcal F\) 和 \(x\) 的每个邻域
+\(U\)，都有 \(F\cap U\neq\varnothing\)，则称 \(x\) 为 \(\mathcal F\) 的
+\emph{聚点}。
+\end{definition}
+
+聚点条件也可以写成：\(\mathcal F\cup\mathcal N(x)\) 具有有限交性质。事实上，
+从有限多个 \(\mathcal F\) 中的集合取交仍得 \(F\in\mathcal F\)，从有限多个
+邻域取交仍得 \(U\in\mathcal N(x)\)；整个有限交非空恰好归结为
+\(F\cap U\neq\varnothing\)。反方向只需考察一个 \(F\) 与一个 \(U\)。
+
+\begin{remark}[细化方向]
+包含方向容易读反。若 \(\mathcal F\subseteq\mathcal G\)，则
+\(\mathcal G\) 有更多大集，因而表达更强的尾部要求；称 \(\mathcal G\) 比
+\(\mathcal F\) 更细。若 \(\mathcal F\to x\)，则
+\(\mathcal N(x)\subseteq\mathcal F\subseteq\mathcal G\)，所以任何仍为真滤子的
+细化 \(\mathcal G\) 也收敛到 \(x\)。
+
+聚点在细化时可能丢失。例如在 \(\mathbb R\) 上，最粗滤子
+\(\{\mathbb R\}\) 的每个点都是聚点；点 \(1\) 的主滤子是它的细化，但 \(0\)
+不再是聚点，因为大集 \(\{1\}\) 与邻域 \((-1/2,1/2)\) 不相交。
+\end{remark}
+
+\begin{definition}[网的尾滤子]
+对网 \(x\colon D\to X\) 与 \(d_0\in D\)，定义尾集
+\[
+ T_{d_0}=\{x_d:d\succeq d_0\}.
+\]
+这些尾集构成滤基：每个 \(T_{d_0}\) 含有 \(x_{d_0}\)，故非空；给定
+\(d_1,d_2\)，取共同上界 \(d_3\)，便有
+\[
+ T_{d_3}\subseteq T_{d_1}\cap T_{d_2}.
+\]
+由它们生成的滤子称为该网的\emph{尾滤子}，记作 \(\mathcal F_x\)。尾集记录
+的是网值，指标本身被压缩掉了；重复访问同一点不会增加新的尾部资料。
+\end{definition}
+
+\begin{proposition}[网与尾滤子有相同极限]
+对拓扑空间中的网 \((x_d)\)，有
+\[
+ x_d\to x\quad\Longleftrightarrow\quad\mathcal F_x\to x.
+\]
+并且，\(x\) 是网的聚点，当且仅当 \(x\) 是 \(\mathcal F_x\) 的聚点。
+\label{ch1:prop:net-tail-filter}
+\end{proposition}
+
+\begin{proof}
+设 \(U\) 是 \(x\) 的邻域。网最终属于 \(U\)，当且仅当存在 \(d_0\in D\)
+使 \(T_{d_0}\subseteq U\)，而后一个条件按生成滤子的定义正是
+\(U\in\mathcal F_x\)。因此“每个邻域最终容纳该网”等价于
+\(\mathcal N(x)\subseteq\mathcal F_x\)，收敛等价得证。
+
+再看聚点。点 \(x\) 是网的聚点，当且仅当对每个邻域 \(U\) 和每个
+\(d_0\in D\)，存在 \(d\succeq d_0\) 使 \(x_d\in U\)；这等价于
+\[
+ T_{d_0}\cap U\neq\varnothing
+ \quad\text{对所有 }d_0\in D\text{ 和 }U\in\mathcal N(x).
+\]
+若此条件成立，而 \(F\in\mathcal F_x\)，则某个尾集 \(T_{d_0}\subseteq F\)，
+从而 \(F\cap U\supseteq T_{d_0}\cap U\neq\varnothing\)。故 \(x\) 是尾滤子的
+聚点。反之，每个尾集本身属于 \(\mathcal F_x\)，滤子聚点条件立即给出上式。
+\end{proof}
+
+\begin{example}[不同指标方式可以产生同一尾滤子]
+在 \(\mathbb R\) 中令
+\[
+ x_n=\frac1n,
+ \qquad
+ y_{2n-1}=y_{2n}=\frac1n
+ \quad(n\geq1).
+\]
+再把 \(\mathbb N\times\mathbb N\) 以逐坐标次序定向，定义
+\[
+ z_{(m,n)}=\frac1{\min\{m,n\}}.
+\]
+记 \(S_N=\{1/k:k\geq N\}\)。\(x\) 从指标 \(N\) 开始的尾集恰为
+\(S_N\)。\(y\) 从指标 \(r\) 开始的尾集为
+\(S_{\lceil r/2\rceil}\)：若 \(r=2N\)，值 \(1/N\) 仍在第 \(2N\) 项出现；
+若 \(r=2N-1\)，结论相同。
+
+对 \(z\)，从 \((m_0,n_0)\) 开始的尾集为
+\[
+ \left\{\frac1{\min\{m,n\}}:m\geq m_0,\ n\geq n_0\right\}
+ =S_{\min\{m_0,n_0\}}.
+\]
+包含关系“\(\subseteq\)”来自
+\(\min\{m,n\}\geq\min\{m_0,n_0\}\)。反过来，若
+\(k\geq\min\{m_0,n_0\}\)，不妨设 \(m_0\leq n_0\)：当
+\(m_0\leq k<n_0\) 时取 \((m,n)=(k,n_0)\)，当 \(k\geq n_0\) 时取
+\((m,n)=(k,k)\)，都得到 \(\min\{m,n\}=k\)。若 \(n_0<m_0\)，则在
+\(n_0\leq k<m_0\) 时取 \((m,n)=(m_0,k)\)，在 \(k\geq m_0\) 时仍取
+\((m,n)=(k,k)\)，也得到所需等式。
+
+所以三条网都以 \((S_N)\) 为尾集滤基。由于
+\((0,\varepsilon)\cap\{1/n:n\geq1\}\) 随 \(\varepsilon>0\) 变化也与
+\((S_N)\) 互相细化，它们生成同一个滤子，并都收敛到 \(0\)。滤子在这里忽略重复次数和索引形状，只保留决定尾部行为的集合条件。
+\end{example}
+
+网可以产生滤子；反方向也可以把一个滤子的所有大集和其中所有可能的点同时编成
+一条网。
+
+\begin{definition}[滤子产生的规范网]
+给定 \(X\) 上的滤子 \(\mathcal F\)，令
+\[
+ D_{\mathcal F}=\{(F,x):F\in\mathcal F,\ x\in F\},
+\]
+并规定
+\[
+ (F,x)\preceq(G,y)\quad\Longleftrightarrow\quad G\subseteq F.
+\]
+这个关系自反；若 \(H\subseteq G\subseteq F\)，它的传递性也由集合包含的
+传递性得到。滤子公理中的 \(X\in\mathcal F\) 与
+\(\varnothing\notin\mathcal F\) 还保证 \(X\neq\varnothing\)，所以
+\(D_{\mathcal F}\neq\varnothing\)。任给 \((F,x),(G,y)\)，集合
+\(F\cap G\in\mathcal F\) 且非空；取 \(z\in F\cap G\)，则
+\((F\cap G,z)\) 是共同上界。因此 \(D_{\mathcal F}\) 是有向集。网
+\[
+ x_{(F,x)}=x
+\]
+称为 \(\mathcal F\) 的\emph{规范网}。
+\end{definition}
+
+\begin{theorem}[网--滤子词典]
+滤子 \(\mathcal F\) 的规范网最终落在每个 \(F\in\mathcal F\) 中，且其尾滤子
+恰好等于 \(\mathcal F\)。因此：
+\begin{enumerate}
+  \item \(\mathcal F\to x\) 当且仅当规范网收敛到 \(x\)；
+  \item \(x\) 是 \(\mathcal F\) 的聚点，当且仅当规范网有一个收敛到 \(x\)
+        的子网。
+\end{enumerate}
+\label{ch1:thm:net-filter-dictionary}
+\end{theorem}
+
+\begin{proof}
+固定 \(F_0\in\mathcal F\)。因为 \(F_0\neq\varnothing\)，取
+\(x_0\in F_0\)。若 \((F,x)\succeq(F_0,x_0)\)，则 \(F\subseteq F_0\)，而
+规范网在该指标处的值 \(x\in F\subseteq F_0\)。所以规范网最终落在
+\(F_0\) 中。
+
+还可以精确算出它在 \((F_0,x_0)\) 之后的尾集。每个后继指标 \((F,x)\) 满足
+\(F\subseteq F_0\)，故其网值属于 \(F_0\)。反之，对每个 \(y\in F_0\)，指标
+\((F_0,y)\) 是 \((F_0,x_0)\) 的后继，且相应网值就是 \(y\)。因此这条尾集
+恰为 \(F_0\)。当 \((F_0,x_0)\) 遍历指标集时，所得尾集滤基正是
+\(\mathcal F\) 本身，所以规范网的尾滤子等于 \(\mathcal F\)。
+
+由 \cref{ch1:prop:net-tail-filter}，一个网与其尾滤子有相同的极限和聚点；因此
+\(\mathcal F\to x\) 等价于规范网收敛到 \(x\)，而 \(x\) 是
+\(\mathcal F\) 的聚点等价于它是规范网的聚点。最后由
+\cref{ch1:thm:cluster-subnet}，后一个条件等价于规范网有收敛到 \(x\) 的子网。
+\end{proof}
+
+\begin{definition}[度量空间中的 Cauchy 滤子]
+设 \((X,d)\) 为度量空间。对非空集 \(A\subseteq X\)，定义
+\[
+ \operatorname{diam}(A)=\sup\{d(x,y):x,y\in A\}\in[0,+\infty].
+\]
+滤子 \(\mathcal F\) 称为\emph{Cauchy 滤子}，若对每个
+\(\varepsilon>0\)，存在 \(F\in\mathcal F\) 使
+\[
+ \operatorname{diam}(F)<\varepsilon.
+\]
+由于滤子不含空集，定义中的小直径大集总是非空。
+\end{definition}
+
+\begin{warningbox}[title={Cauchy 不是纯拓扑概念}]
+收敛滤子只需知道邻域，因而由拓扑决定；Cauchy 滤子却要比较同一个尾部中任意两点
+是否彼此接近，它依赖度量，更准确地说依赖空间的一致结构。相同开集不保证相同的
+Cauchy 尾部。
+
+在 $\mathbb R$ 上比较通常度量
+\[
+ d(x,y)=|x-y|
+\]
+与拉回度量
+\[
+ \rho(x,y)=|\arctan x-\arctan y|.
+\]
+因为 $\arctan:\mathbb R\to(-\pi/2,\pi/2)$ 是同胚，二者诱导完全相同的拓扑。
+但序列 $x_n=n$ 在 $d$ 下不是 Cauchy；在 $\rho$ 下却是 Cauchy，因为
+$\arctan n\to\pi/2$。它在 $\mathbb R$ 中没有 $\rho$-极限，故
+$(\mathbb R,\rho)$ 不完备，而 $(\mathbb R,d)$ 完备。
+
+因此 Cauchy 性取决于所给度量；更一般地，它取决于空间的一致结构。以下的 Cauchy
+性均相对于指定的度量而言。
+\end{warningbox}
+
+\begin{example}[$\sqrt2$ 的有理近似滤子]
+\label{ch1:exa:worked-sqrt-two-filter}
+在 $\mathbb Q$ 中可以有许多不同数列逼近 $\sqrt2$；这些序列虽不相同，却服从
+同一族逐级收紧的近似条件。令
+\[
+ B_n=\{q\in\mathbb Q:q>0, |q^2-2|<1/n\},
+ \qquad n\geq1.
+\]
+滤基 $(B_n)$ 以这些近似集为基本大集。
+
+\medskip
+\noindent 滤基 $(B_n)$。
+函数 $x\mapsto x^2$ 在 $\sqrt2$ 处连续，而 $\mathbb Q$ 在 $\mathbb R$ 中稠密，
+所以每个 $B_n$ 都含有理点。又有 $B_{n+1}\subseteq B_n$，故
+\[
+ B_m\cap B_n=B_{\max\{m,n\}}\neq\varnothing.
+\]
+因此 $(B_n)$ 是滤基，记它生成的滤子为 $\mathcal F_{\sqrt2}$。
+
+\medskip
+\noindent Cauchy 性。
+当 $n\geq2$ 且 $q\in B_n$ 时，$q^2>2-1/n>1$，所以 $q>1$。
+若 $q,r\in B_n$，则
+\[
+ |q-r|=\frac{|q^2-r^2|}{q+r}
+ \leq\frac{|q^2-2|+|r^2-2|}{q+r}
+ <\frac{2/n}{2}=\frac1n.
+\]
+于是 $\operatorname{diam}(B_n)\leq1/n$。给定 $\varepsilon>0$，取
+$n>\max\{2,1/\varepsilon\}$，便有小直径大集 $B_n$；故
+$\mathcal F_{\sqrt2}$ 是 Cauchy 滤子。这步使用了“取正根”以保证
+$q+r$ 有统一正下界；如果把正负两簇根同时收入滤基，直径就不会
+趋于零。
+
+\medskip
+\noindent $\mathbb Q$ 中不存在极限。
+反设 $\mathcal F_{\sqrt2}\to q_0\in\mathbb Q$。因滤子是 Cauchy，上面的
+小直径还给出一个直接矛盾。给定 $\varepsilon>0$，取 $n$ 使
+$\operatorname{diam}(B_n)<\varepsilon/2$，再由收敛性知
+$B(q_0,\varepsilon/2)\in\mathcal F_{\sqrt2}$。两个大集相交，取
+$r\in B_n\cap B(q_0,\varepsilon/2)$；对每个 $s\in B_n$，
+\[
+ |s-q_0|\leq|s-r|+|r-q_0|<\varepsilon.
+\]
+故对每个 $\varepsilon>0$ 都存在指标 $N_\varepsilon$ 使
+$B_{N_\varepsilon}\subseteq B(q_0,\varepsilon)$。又因 $(B_n)$ 递减，所有
+$m\geq N_\varepsilon$ 都有 $B_m\subseteq B(q_0,\varepsilon)$。因此任意取
+$s_n\in B_n$ 都会得到 $s_n\to q_0$；同时 $|s_n^2-2|<1/n$，令极限得 $q_0^2=2$，
+这与 $q_0\in\mathbb Q$ 矛盾。
+
+\medskip
+\noindent $\mathbb R$ 中的极限 $\sqrt2$。
+把同一滤基看成 $\mathbb R$ 的子集时，对 $q\in B_n$ 直接因式分解得
+\[
+ |q-\sqrt2|
+ =\frac{|q^2-2|}{q+\sqrt2}
+ <\frac{1}{n\sqrt2}.
+\]
+给定 $\varepsilon>0$，取 $n>1/(\sqrt2\varepsilon)$，便有
+$B_n\subseteq(\sqrt2-\varepsilon,\sqrt2+\varepsilon)$。
+因此推前到 $\mathbb R$ 的滤子收敛到 $\sqrt2$。不同的有理近似序列
+只是这个滤子的不同见证网；它们表示同一个完备化点。
+
+\medskip
+这个例子区分了 Cauchy 性与收敛性。收敛滤子必为 Cauchy 滤子，而一个度量空间
+完备，当且仅当其中每个 Cauchy 滤子都收敛。
+\end{example}
+
+\begin{proposition}[收敛滤子必为 Cauchy]
+若度量空间中的滤子 \(\mathcal F\) 收敛到 \(x\)，则 \(\mathcal F\) 是 Cauchy
+滤子。
+\label{ch1:prop:convergent-filter-cauchy}
+\end{proposition}
+
+\begin{proof}
+给定 \(\varepsilon>0\)。因为 \(\mathcal F\to x\)，开球
+\(B(x,\varepsilon/2)\) 属于 \(\mathcal F\)。若 \(y,z\) 属于这个球，则由三角
+不等式
+\[
+ d(y,z)\leq d(y,x)+d(x,z)<\frac\varepsilon2+\frac\varepsilon2=\varepsilon.
+\]
+所以 \(\operatorname{diam}(B(x,\varepsilon/2))\leq\varepsilon\)。为了得到定义中
+严格的小于号，改用半径 \(\varepsilon/3\)：此时任意两点间距离小于
+\(2\varepsilon/3\)，故
+\(\operatorname{diam}(B(x,\varepsilon/3))\leq2\varepsilon/3<\varepsilon\)。
+因此 \(\mathcal F\) 是 Cauchy 滤子。
+\end{proof}
+
+半径取成 \(\varepsilon/3\) 可保证直径严格小于 \(\varepsilon\)。若取
+\(\varepsilon/2\)，只能直接得到直径不超过 \(\varepsilon\)，因为一族严格小于
+\(\varepsilon\) 的数，其上确界仍可能等于 \(\varepsilon\)。
+
+\begin{theorem}[完备性的滤子刻画]
+度量空间 \(X\) 完备，当且仅当每个 Cauchy 滤子都收敛。
+\label{ch1:thm:complete-cauchy-filter}
+\end{theorem}
+
+
+\begin{proof}
+先设 \(X\) 完备，令 \(\mathcal F\) 为 Cauchy 滤子。对每个 \(n\geq1\)，取
+\(F_n\in\mathcal F\) 使
+\[
+ \operatorname{diam}(F_n)<2^{-n},
+\]
+并令
+\[
+ G_n=F_1\cap\cdots\cap F_n.
+\]
+由滤子的有限交公理，\(G_n\in\mathcal F\)，所以 \(G_n\neq\varnothing\)。取
+\(x_n\in G_n\)。若 \(m\geq n\)，则 \(G_m\subseteq G_n\)，从而
+\(x_m,x_n\in G_n\subseteq F_n\)，于是
+\[
+ d(x_m,x_n)\leq\operatorname{diam}(F_n)<2^{-n}.
+\]
+所以 \((x_n)\) 是 Cauchy 序列。完备性给出某个 \(x\in X\)，使
+\(x_n\to x\)。
+
+证明 \(\mathcal F\to x\)。给定 \(\varepsilon>0\)，取 \(N\) 使
+\(2^{-N}<\varepsilon/2\)。由 \(x_n\to x\)，存在 \(M\) 使
+\(m\geq M\Rightarrow d(x_m,x)<\varepsilon/2\)；取
+\(m\geq\max\{M,N\}\)。对每个 \(y\in G_N\)，有
+\(x_m\in G_m\subseteq G_N\subseteq F_N\)，故
+\[
+ d(y,x)\leq d(y,x_m)+d(x_m,x)
+ \leq\operatorname{diam}(F_N)+d(x_m,x)
+ <\varepsilon.
+\]
+于是 \(G_N\subseteq B(x,\varepsilon)\)。由于 \(G_N\in\mathcal F\) 且滤子向上
+封闭，\(B(x,\varepsilon)\in\mathcal F\)。每个 \(x\) 的邻域都包含某个开球，
+再用向上封闭性可得 \(\mathcal N(x)\subseteq\mathcal F\)，所以
+\(\mathcal F\to x\)。
+
+反之，假设每个 Cauchy 滤子都收敛。令 \((x_n)\) 为 \(X\) 中任意 Cauchy
+序列。它的尾集
+\[
+ T_N=\{x_n:n\geq N\}
+\]
+构成滤基。给定 \(\varepsilon>0\)，由序列的 Cauchy 性，存在 \(N\)，使
+\(m,n\geq N\) 时 \(d(x_m,x_n)<\varepsilon/2\)。于是对任意
+\(y,z\in T_N\)，可取指标 \(m,n\geq N\) 使 \(y=x_m,z=x_n\)，从而
+\[
+ d(y,z)<\varepsilon/2,\qquad
+ \operatorname{diam}(T_N)\leq\varepsilon/2<\varepsilon.
+\]
+所以该尾滤子是 Cauchy 滤子。由假设，它收敛到某个 \(x\in X\)。
+\cref{ch1:prop:net-tail-filter} 随即给出 \(x_n\to x\)。因此每个 Cauchy 序列
+都收敛，\(X\) 完备。
+\end{proof}
+
+\begin{example}[Cauchy 滤子与嵌套闭集原理]
+\label{ch1:exa:worked-nested-closed-sets}
+设 $(X,d)$ 完备，且非空闭集列满足
+\[
+ C_1\supseteq C_2\supseteq\cdots,
+ \qquad \operatorname{diam}(C_n)\longrightarrow0.
+\]
+嵌套条件与直径趋零共同确定一个满足全部定位要求的点。
+
+\medskip
+\noindent 嵌套闭集滤子。
+因 $C_m\cap C_n=C_{\max\{m,n\}}\neq\varnothing$，集合族 $(C_n)$ 是滤基。
+记其生成滤子为 $\mathcal F_C$。给定 $\varepsilon>0$，取 $N$ 使
+$\operatorname{diam}(C_N)<\varepsilon$；因 $C_N\in\mathcal F_C$，所以
+$\mathcal F_C$ 是 Cauchy 滤子。
+
+\medskip
+\noindent 交集中的共同点。
+由 \cref{ch1:thm:complete-cauchy-filter}，存在 $x\in X$ 使
+$\mathcal F_C\to x$。固定 $n$。若 $x\notin C_n$，因 $C_n$ 闭，
+$X\setminus C_n$ 是 $x$ 的邻域，从而也是 $\mathcal F_C$ 的大集。
+可 $C_n$ 本身同样是大集，两者交为空，违反滤子公理。故
+$x\in C_n$ 对所有 $n$ 成立，即
+\[
+ x\in\bigcap_{n\geq1}C_n.
+\]
+
+\medskip
+\noindent 交点的唯一性。
+若 $x,y$ 都在每个 $C_n$ 中，则
+\[
+ d(x,y)\leq\operatorname{diam}(C_n)
+ \quad\text{对所有 }n\text{ 成立}.
+\]
+令 $n\to\infty$ 得 $d(x,y)=0$，所以 $x=y$。因而交集不仅非空，而且
+恰含一点。
+
+\medskip
+\textbf{三分嵌套区间。}
+在 $\mathbb R$ 中从 $C_0=[0,1]$ 开始。已取闭区间
+$C_n=[a_n,b_n]$ 后，把它三等分；若 $\sqrt2/2$ 在左边两个三分之一的并中，
+就取那个长度 $2(b_n-a_n)/3$ 的闭区间，否则取右边两个三分之一
+的并。这样总保留目标点，且
+\[
+ \operatorname{diam}(C_n)=\left(\frac23\right)^n.
+\]
+上述原理保证这些闭区间的交恰为 $\{\sqrt2/2\}$。二分法、十进小数逼近与
+Cantor 型嵌套闭集论证都可用同一原理处理。
+
+\medskip
+\begin{itemize}
+  \item 若删除闭性，$C_n=(0,1/n)$ 嵌套且直径趋零，但交集为空；
+        极限 $0$ 落在边界上无法被保留。
+  \item 若删除完备性，在 $\mathbb Q$ 中取不断夹住 $\sqrt2$ 的有理端点闭区间，
+        它们在 $\mathbb Q$ 内的交集仍为空。
+  \item 若删除直径趋零，存在性可能仍在，但唯一性不再可期；例如
+        $C_n=[0,1]$ 的交集是整个区间。
+\end{itemize}
+因此该结论同时给出极限点的存在性与唯一性判据。
+\end{example}
+
+\begin{example}[缺口被 Cauchy 滤子探测]
+在 \(X=(0,1)\) 上使用通常度量。集合族
+\[
+ \mathcal B=\{(0,1/n):n\geq1\}
+\]
+是滤基：这些集合非空且递减，两个集合的交仍是其中较小的一个。又因
+\[
+ \operatorname{diam}(0,1/n)=\frac1n\longrightarrow0,
+\]
+它生成的滤子 \(\mathcal F\) 是 Cauchy 滤子。
+
+假设 \(\mathcal F\to x\) 对某个 \(x\in(0,1)\) 成立。集合
+\[
+ U=(x/2,3x/2)\cap(0,1)
+\]
+是 \(x\) 的邻域，所以应有 \(U\in\mathcal F\)。按生成滤子的定义，这要求
+存在 \(n\) 使 \((0,1/n)\subseteq U\)。但对每个 \(n\)，数
+\[
+ y_n=\min\left\{\frac{x}{4},\frac1{2n}\right\}
+\]
+满足 \(0<y_n<1/n\) 且 \(y_n<x/2\)，所以
+\(y_n\in(0,1/n)\setminus U\)。不存在这样的包含关系，矛盾。因此该 Cauchy
+滤子在 $(0,1)$ 中没有极限；若把空间补成 $[0,1]$，它则收敛到端点 $0$。
+\end{example}
+
+滤子 $\mathcal F_\infty$ 可以统一表示离开每个有界区间的尾部行为。
+
+\begin{example}[无穷远滤子与紧水平集]
+\label{ch1:exa:worked-filter-at-infinity}
+讨论函数在无穷远处是否趋于零时，需要同时处理 $x\to+\infty$、$x\to-\infty$
+以及在正负两侧交替取值的情形。在
+$\mathbb R$ 中令
+\[
+ B_n=\mathbb R\setminus[-n,n],
+ \qquad n\geq1.
+\]
+这些集合非空且递减，所以生成滤子 $\mathcal F_\infty$。它的每个集合都包含某个有界区间的补集。
+
+\medskip
+\noindent 无穷远处的滤子极限。
+对函数 $f:\mathbb R\to\mathbb R$，定义它的像值滤子
+\[
+ \mathcal F_f=
+ \{A\subseteq\mathbb R:f^{-1}(A)\in\mathcal F_\infty\}.
+\]
+按定义，$\mathcal F_f\to0$ 当且仅当
+对每个 $\varepsilon>0$，存在 $n$ 使
+\begin{equation}
+ |x|>n\quad\Longrightarrow\quad |f(x)|<\varepsilon.
+ \label{ch1:eq:worked-filter-infinity}
+\end{equation}
+这个滤子条件同时涵盖正、负两个方向以及在两者之间交替的任意网。
+
+\medskip
+\noindent 显著水平集的紧性。
+设 $f$ 连续，并令
+\[
+ K_\varepsilon=\{x\in\mathbb R:|f(x)|\geq\varepsilon\}.
+\]
+若 $\mathcal F_f\to0$，式 \eqref{ch1:eq:worked-filter-infinity} 给出某个 $n$ 使
+$K_\varepsilon\subseteq[-n,n]$。又因 $f$ 连续，$K_\varepsilon$ 闭，故它紧。
+反之，若每个 $K_\varepsilon$ 紧，则它有界，可取 $n$ 使
+$K_\varepsilon\subseteq[-n,n]$；这立即给出
+$B_n\subseteq f^{-1}((-\varepsilon,\varepsilon))$，也就是
+$\mathcal F_f\to0$。
+
+\medskip
+\noindent 三个函数。
+\[
+ f_1(x)=\frac1{1+|x|},
+ \qquad
+ f_2(x)=\frac{\sin x}{1+|x|},
+ \qquad
+ f_3(x)=\sin x.
+\]
+前两者满足 $|f_j(x)|\leq1/(1+|x|)$，所以对给定 $\varepsilon$可显式取
+$n>1/\varepsilon$，得到式 \eqref{ch1:eq:worked-filter-infinity}。但对 $f_3$，
+集合 $K_{1/2}$ 包含无穷多个趋于正、负无穷的区间，因而无界；
+$\mathcal F_{f_3}$ 不收敛到 $0$。
+
+\medskip
+滤子等价式本身只需要 $K_\varepsilon$ 有界；连续性使其闭，从而把有界升级为紧。
+给 $\mathbb R$ 加上一点 $\infty$，并把每个基元换成
+\[
+ \widehat B_n=\{\infty\}\cup B_n
+\]
+后，$(\widehat B_n)$ 在 $\mathbb R^*$ 中生成新点的邻域滤子：每个紧集
+$K\subseteq\mathbb R$ 都包含在某个 $[-n,n]$ 中，因而
+$\widehat B_n\subseteq\mathbb R^*\setminus K$。等价地，该邻域滤子在
+$\mathbb R$ 上的迹就是 $\mathcal F_\infty$。于是上述等价恰是
+$f(\infty)=0$ 处的连续性。
+这为 $C_0(X)$、紧支撑逼近以及概率质量“逃向无穷远”提供了相同的滤子表述。
+\end{example}
+
+网、尾滤子、邻域滤子与 Cauchy 条件之间的关系如下。网与其尾滤子有相同的
+极限和聚点，规范网则从滤子构造相应的网。度量使“小直径大集”成为可定义的条件；
+完备性等价于每个满足这一条件的滤子都收敛。
+
+\begin{center}
+\begin{tikzpicture}[
+  every node/.style={font=\small,align=center},
+  box/.style={draw,rounded corners,inner sep=5pt,text width=2.55cm},
+  >=Stealth]
+  \node[box] (net) at (0,1.3) {网\\有向指标与具体网值};
+  \node[box] (filter) at (4.0,1.3) {尾滤子\\最终容纳它的集合};
+  \node[box,fill=green!7] (limit) at (8.0,1.3) {极限 \(x\)\\\(\mathcal N(x)\subseteq\mathcal F\)};
+  \node[box] (neighborhood) at (8.0,-1.0) {邻域滤子 \(\mathcal N(x)\)\\点附近的拓扑要求};
+  \node[box,fill=blue!5] (cauchy) at (4.0,-1.0) {Cauchy 滤子\\任意尺度有小直径大集};
+  \node[box] (canonical) at (0,-1.0) {规范网\\指标 \((F,x)\)};
+  \draw[->,thick] (net)--node[above,font=\scriptsize]{取尾集} (filter);
+  \draw[->,thick] (filter)--node[above,font=\scriptsize]{含有 \(\mathcal N(x)\)} (limit);
+  \draw[->,thick,dashed] (neighborhood)--node[right,font=\scriptsize]{提供邻域要求} (limit);
+  \draw[->,thick,dashed] (filter)--node[right,font=\scriptsize,align=left]{若每个尺度\\有小直径大集} (cauchy);
+  \draw[->,thick] (cauchy)--node[below right,font=\scriptsize]{完备时恢复极限} (limit);
+  \draw[->,thick,dashed,bend right=18] (filter) to node[below,font=\scriptsize]{产生} (canonical);
+  \draw[->,thick,dashed,bend right=18] (canonical) to node[above,font=\scriptsize]{尾滤子恰为 \(\mathcal F\)} (filter);
+\end{tikzpicture}
+\end{center}
+
+\begin{remark}[规范网的指标集]
+规范网把所有 \((F,x)\) 同时列为指标。指标的次序同时记录大集的细化与点的归属，
+因而所得网的尾滤子恰为原滤子。
+\end{remark}
+
+\begin{summarybox}[title={网、滤子与完备性}]
+网保留有向指标和具体网值，滤子只保留最终属于哪些集合。尾滤子与规范网表明，
+两种表述给出相同的收敛与聚点。闭包、连续性和下半连续性都可以用网刻画；在度量
+空间中，Cauchy 滤子以小直径大集表示 Cauchy 条件，完备性等价于每个 Cauchy 滤子
+收敛。
+\end{summarybox}
